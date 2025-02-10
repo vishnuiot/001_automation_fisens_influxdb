@@ -9,6 +9,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 #import pandas for data processing
 import pandas as pd
+#date time for data frame
+from datetime import datetime
+# datetime object containing current date and time
+now = datetime.now()
+print(now)
 
 serialPort = serial.Serial(port='/dev/ttyUSB0',baudrate= 3000000,parity=serial.PARITY_NONE,
                            bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
@@ -74,10 +79,18 @@ if serialPort.isOpen():
     
     # giving a title to my graph
     plt.title('My first graph!')
-    plt.show()
+    # plt.show()
     serialPort.close()
     time.sleep(0.1)  # Delay between communications 
-
+    ## Pandas data frame operations
+    data={
+        "wavelength":wavelength,
+        "amplitude":spectrum_list}
+    #load data into a DataFrame object:
+    df = pd.DataFrame(data)
+    print(df)
+    # append data frame to CSV file
+    df.to_csv('system_data.csv', mode='a', index=False, header=False)
 
 serialPort.close()
 
