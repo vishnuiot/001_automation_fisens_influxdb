@@ -14,13 +14,27 @@ time.sleep(2)
 serialPort.flushInput()
 serialPort.flushOutput()
 if serialPort.isOpen():
+    ### Step 1(10): Print device ID
     print ("Port Open =",serialPort.name,"\n")
     serialPort.write(b"?>")
     device_model = serialPort.read(20) 
-    print(device_model)
-    print (type(device_model))
-    print (device_model.decode())   # removes byte string  
+    # print(device_model)
+    # print (type(device_model))
+    print (device_model.decode(),'\n')   # removes byte string  
     time.sleep(1)                   # Delay between communications
+    ### step 2(10): set integration time
+    serialPort.write(b"iz,500000>")  # ( iz,x= 30-65,000,000)
+    time.sleep(0.1)
+    ### step 3(10): Turn LED ON
+    serialPort.write(b"LED,1>")# LED,(x=1)-ON;LED,(x=0)-OFF
+    print('SLED ON','\n')
+    time.sleep(0.1)  # Delay between communications
+    ### step 4: Start Global measurements
+    serialPort.write(b"a>")    
+    ### step5: Swithch on on-board calculation
+    serialPort.write(b"OBB,0>")
+    time.sleep(0.1)  # Delay between communications
+    ### step6: Get spectrum
     serialPort.write(b"s>")         #get spectrum
     x = serialPort.read(10000) 
     print(x,'\n')
@@ -34,41 +48,34 @@ if serialPort.isOpen():
     time.sleep(0.1)                 # Delay between communications
     deserialized_bytes = np.frombuffer(y, dtype=np.uint16)
     deserialized_x = np.reshape(deserialized_bytes, newshape=(1495))
-    print (deserialized_x)
+    # print (deserialized_x)
     spectrum_list=list(deserialized_x)
     spectrum_list=spectrum_list[3:]
     print(spectrum_list)  
     print('spectrum_unfiltered=',len(deserialized_x))  # prints the list values
     print('spectrum_filtered=',len(spectrum_list))     # prints the list values
-    plt.plot(spectrum_list)
-    plt.ylabel('some numbers')
-    # plt.show() 
-    serialPort.write(b"WLL>")                           #get wavelength values
-    x = serialPort.read(10000) 
-    #print(x) 
-    g=len(x)
-    h=g-4
-    y=x[0:h]
-    time.sleep(0.1)                                     # Delay between communications
-    print (len(y))
-    deserialized_bytes = np.frombuffer(y, dtype=np.uint16)
-    deserialized_x = np.reshape(deserialized_bytes, newshape=(2990))
-    print (deserialized_x)
-    wavelength_list=list(deserialized_x)
-    print (wavelength_list)  
+    # wavelength_generation
+    c=np.linspace(800,850,1492)
+    g=list(c)
+    wavelength = [round(num, 3) for num in g]
+    time.sleep(0.1)  # Delay between communications
+    ### Switch of SLED
+    serialPort.write(b"LED,0>")# LED,(x=1)-ON;LED,(x=0)-OFF
+    print('SLED OFF','\n')
     
-    plt.plot(wavelength_list)
-    plt.ylabel('some numbers')  
-    #plt.show()      ## plot y vs wavelenth(x axis)
-    # serialPort.write(b"LED,1>")# LED,(x=1)-ON;LED,(x=0)-OFF   # LED Section
-    # print('LED ON')
-    # serialPort.write(b"WLL>")
-    # x = serialPort.read(100000) 
-    # print(x)
-    # time.sleep(0.2)  # Delay between communications
-    # serialPort.write(b"LED,0>")# LED,(x=1)-ON;LED,(x=0)-OFF
-    # print('LED OFF')
-    # serialPort.close()
-    # time.sleep(0.1)  # Delay between communications
+    ### Plotting the data
+    plt.plot(wavelength,spectrum_list)
+    # naming the x axis
+    plt.xlabel('wavelength (nm)')
+    # naming the y axis
+    plt.ylabel('Intensity (a.u)')
+    
+    # giving a title to my graph
+    plt.title('My first graph!')
+    plt.show()
+    serialPort.close()
+    time.sleep(0.1)  # Delay between communications 
+
+
 serialPort.close()
 
