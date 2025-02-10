@@ -7,6 +7,8 @@ sys.set_int_max_str_digits(0)
 import numpy as np
 #import matplotlib for data visualization
 import matplotlib.pyplot as plt
+#import pandas for data processing
+import pandas as pd
 
 serialPort = serial.Serial(port='/dev/ttyUSB0',baudrate= 3000000,parity=serial.PARITY_NONE,
                            bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
