@@ -31,7 +31,7 @@ if serialPort.isOpen():
     g=len(x)
     h=g-4
     y=x[0:h]
-    time.sleep(0.1)  # Delay between communications
+    time.sleep(0.1)                 # Delay between communications
     deserialized_bytes = np.frombuffer(y, dtype=np.uint16)
     deserialized_x = np.reshape(deserialized_bytes, newshape=(1495))
     print (deserialized_x)
@@ -39,9 +39,36 @@ if serialPort.isOpen():
     spectrum_list=spectrum_list[3:]
     print(spectrum_list)  
     print('spectrum_unfiltered=',len(deserialized_x))  # prints the list values
-    print('spectrum_filtered=',len(spectrum_list))  # prints the list values
+    print('spectrum_filtered=',len(spectrum_list))     # prints the list values
     plt.plot(spectrum_list)
     plt.ylabel('some numbers')
-    plt.show() 
+    # plt.show() 
+    serialPort.write(b"WLL>")                           #get wavelength values
+    x = serialPort.read(10000) 
+    #print(x) 
+    g=len(x)
+    h=g-4
+    y=x[0:h]
+    time.sleep(0.1)                                     # Delay between communications
+    print (len(y))
+    deserialized_bytes = np.frombuffer(y, dtype=np.uint16)
+    deserialized_x = np.reshape(deserialized_bytes, newshape=(2990))
+    print (deserialized_x)
+    wavelength_list=list(deserialized_x)
+    print (wavelength_list)  
+    
+    plt.plot(wavelength_list)
+    plt.ylabel('some numbers')  
+    #plt.show()      ## plot y vs wavelenth(x axis)
+    # serialPort.write(b"LED,1>")# LED,(x=1)-ON;LED,(x=0)-OFF   # LED Section
+    # print('LED ON')
+    # serialPort.write(b"WLL>")
+    # x = serialPort.read(100000) 
+    # print(x)
+    # time.sleep(0.2)  # Delay between communications
+    # serialPort.write(b"LED,0>")# LED,(x=1)-ON;LED,(x=0)-OFF
+    # print('LED OFF')
+    # serialPort.close()
+    # time.sleep(0.1)  # Delay between communications
 serialPort.close()
 
