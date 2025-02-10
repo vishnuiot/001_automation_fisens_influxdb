@@ -7,3 +7,6 @@ ls /dev/ttyUSB0 >connected_spectrometer_port.txt
 #freexe requirements.txt file
 pip3 freeze > requirements.txt
 
+#PRINT PYTHON ENVIRONMENT
+echo $VIRTUAL_ENV
+

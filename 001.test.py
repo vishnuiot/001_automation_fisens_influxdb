@@ -1,1 +1,2 @@
-print("test")
+import sys
+print(sys.prefix)
