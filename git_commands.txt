@@ -1,0 +1,2 @@
+git rm -r --cached FolderName
+git rm -r --cached .venv
