@@ -1,4 +1,6 @@
-import time,serial,sys
+#!/home/vishnu/Documents/001_automation_fisens_influxdb/.venv/bin/python
+# Important to specify working directory in os.chdir
+import time,serial,sys,os
 from serial import Serial
 #increase the limit for string conversion
 import sys
@@ -14,6 +16,9 @@ from datetime import datetime
 # datetime object containing current date and time
 now = datetime.now()
 print(now)
+
+#set absolute path for automated data saving into this directory
+os.chdir("/home/vishnu/Documents/001_automation_fisens_influxdb")
 
 serialPort = serial.Serial(port='/dev/ttyUSB0',baudrate= 3000000,parity=serial.PARITY_NONE,
                            bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
