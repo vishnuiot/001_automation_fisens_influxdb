@@ -42,8 +42,9 @@ if serialPort.isOpen():
     print('spectrum_filtered=',len(spectrum_list))     # prints the list values
     plt.plot(spectrum_list)
     plt.ylabel('some numbers')
-    # plt.show() 
-    serialPort.write(b"WLL>")                           #get wavelength values
+    plt.show() 
+    ###get wavelength values
+    serialPort.write(b"WLL>")                           
     x = serialPort.read(10000) 
     #print(x) 
     g=len(x)
@@ -59,7 +60,7 @@ if serialPort.isOpen():
     
     plt.plot(wavelength_list)
     plt.ylabel('some numbers')  
-    #plt.show()      ## plot y vs wavelenth(x axis)
+    # plt.show()      ## plot y vs wavelenth(x axis)
     # serialPort.write(b"LED,1>")# LED,(x=1)-ON;LED,(x=0)-OFF   # LED Section
     # print('LED ON')
     # serialPort.write(b"WLL>")
