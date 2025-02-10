@@ -90,7 +90,7 @@ if serialPort.isOpen():
     df = pd.DataFrame(data)
     print(df)
     # append data frame to CSV file
-    df.to_csv('system_data.csv', mode='a', index=False, header=False)
-
+    # df.to_csv('spectrum.csv',mode='a', index=True, header=True)
+    df.to_csv('spectrum.csv',mode='w', index=True, header=True)
 serialPort.close()
 
