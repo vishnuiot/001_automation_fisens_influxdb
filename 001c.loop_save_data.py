@@ -23,7 +23,7 @@ if serialPort.isOpen():
     print (device_model.decode(),'\n')   # removes byte string  
     time.sleep(1)                   # Delay between communications
     ### step 2(10): set integration time
-    serialPort.write(b"iz,500000>")  # ( iz,x= 30-65,000,000)
+    serialPort.write(b"iz,60,000")  # ( iz,x= 30-65,000,000)
     time.sleep(0.1)
     ### step 3(10): Turn LED ON
     serialPort.write(b"LED,1>")# LED,(x=1)-ON;LED,(x=0)-OFF
@@ -37,25 +37,25 @@ if serialPort.isOpen():
     ### step6: Get spectrum
     serialPort.write(b"s>")         #get spectrum
     x = serialPort.read(10000) 
-    print(x,'\n')
-    print (type(x),'\n')
+    # print(x,'\n')
+    # print (type(x),'\n')
     a= (int.from_bytes(x,"big"))
-    print (a)
+    # print (a)
     ## raw data processing
     g=len(x)
     h=g-4
     y=x[0:h]
     time.sleep(0.1)                 # Delay between communications
     deserialized_bytes = np.frombuffer(y, dtype=np.uint16)
-    deserialized_x = np.reshape(deserialized_bytes, newshape=(1495))
-    # print (deserialized_x)
+    deserialized_x = np.reshape(deserialized_bytes, shape=(1495))
+    print (deserialized_x)
     spectrum_list=list(deserialized_x)
     spectrum_list=spectrum_list[3:]
-    print(spectrum_list)  
+    # print(spectrum_list)  
     print('spectrum_unfiltered=',len(deserialized_x))  # prints the list values
     print('spectrum_filtered=',len(spectrum_list))     # prints the list values
     # wavelength_generation
-    c=np.linspace(800,850,1492)
+    c=np.linspace(800,900,1492)
     g=list(c)
     wavelength = [round(num, 3) for num in g]
     time.sleep(0.1)  # Delay between communications
