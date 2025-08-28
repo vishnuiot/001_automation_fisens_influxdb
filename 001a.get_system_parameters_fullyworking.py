@@ -1,4 +1,3 @@
-import time,serial,sys
 from serial import Serial
 #increase the limit for string conversion
 import sys
