@@ -1,3 +1,5 @@
+# Important to specify working directory in os.chdir
+import time,serial,sys,os
 from serial import Serial
 #increase the limit for string conversion
 import sys

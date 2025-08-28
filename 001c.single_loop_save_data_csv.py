@@ -79,7 +79,7 @@ if serialPort.isOpen():
     
     # giving a title to my graph
     plt.title('My first graph!')
-    # plt.show()
+    plt.show()
     serialPort.close()
     time.sleep(0.1)  # Delay between communications 
     ## Pandas data frame operations
