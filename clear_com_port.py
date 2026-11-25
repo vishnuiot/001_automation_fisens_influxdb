@@ -37,4 +37,4 @@ time.sleep(3)
 
 print("=" * 60)
 print("✅ COM4 should now be free!")
-print("\nNow run: python log_fisens_FINAL_with_plots.py")
+print("\nNow run: python Fiber_optic_sensing_60sec.py")
