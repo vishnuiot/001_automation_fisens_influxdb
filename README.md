@@ -24,7 +24,7 @@ Current Python scripts and Windows batch files for the FiSens fibre optic sensor
    pip install -r requirements.txt
    ```
 2. Set the InfluxDB token as an environment variable named `INFLUXDB_TOKEN` (or in a `.env` file, which git ignores). The org is `fisens` and the bucket is `sensors`.
-3. Change the default passwords in `docker-compose.yml` (`INFLUXDB_PASSWORD`, `GRAFANA_PASSWORD`) before running the stack.
+3. Set `INFLUXDB_PASSWORD` and `GRAFANA_PASSWORD` in your environment or `.env`. Docker Compose refuses to start until both are set.
 
 ## Notes
 
