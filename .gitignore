@@ -1,8 +1,16 @@
-/.venv
-/old
+# Secrets and local settings
+.env
 apikey.env
+influx_api.txt
 
+# Local environments and data
+venv/
+.venv/
+measurement_plots/
+old_measurement_plots/
+wetransfer-*/
+labview_files_fiber_optic_Sensor/
 
-
-
-
+# Editor and office lock files
+.~lock*
+__pycache__/

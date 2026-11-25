@@ -1,32 +1,32 @@
-# FiSens InfluxDB Automation – Python Data Logging
+# FiSens Fiber Optic Sensor – Data Logging and Dashboard
 
-Python scripts that read fibre optic sensor data from the FiSens / FiSpec interrogator over a serial port, save it to CSV, and write it to InfluxDB, plus the batch files used to run the software.
+Current Python scripts and Windows batch files for the FiSens fibre optic sensor: serial acquisition, InfluxDB logging, a web dashboard, and Docker setup.
 
-## Scripts
+## Files
 
 | File | Purpose |
 |---|---|
-| `002a_max_point_influxdb.py` | Acquire peak data and write to InfluxDB (PC) |
-| `002aa_raspberrypi_max_point_influxdb copy.py` | Same logger for the Raspberry Pi |
-| `001c.single_loop_save_data_csv.py` | Acquire and save one measurement loop to CSV |
-| `001d.multi_loop_csv.py` | Acquire multiple loops to CSV |
-| `Fisens_batch_file/batch.bat` / `batch.txt` | Batch script used to run the software |
+| `Fiber_optic_sensing_60sec.py` | Read the sensor over the serial port every 60 seconds and write to InfluxDB |
+| `fisens_dashboard.py` | Web dashboard that reads from InfluxDB (uses `templates/index.html`) |
+| `clear_com_port.py` | Clear the serial port |
+| `clear_influxdb.py` | Delete all data from the `sensors` bucket (asks for confirmation) |
+| `start_single_session.bat` | Start one logging session on Windows |
+| `start_dashboard.bat` | Start the dashboard on Windows |
+| `Dockerfile`, `docker-compose.yml` | Run the services in Docker |
+| `requirements.txt` | Python dependencies |
 
 ## Setup
 
 1. Create a virtual environment and install the requirements:
    ```
-   python -m venv .venv
-   source .venv/bin/activate        # Windows: .venv\Scripts\activate
-   pip install -r requirements.txt  # Raspberry Pi: requirements_fisens_rpi.txt
+   python -m venv venv
+   venv\Scripts\activate
+   pip install -r requirements.txt
    ```
-2. Create an `apikey.env` file in the project folder (it is ignored by git) with your InfluxDB token:
-   ```
-   INFLUXDB_TOKEN=<your token>
-   ```
-3. Set the serial port (for example `/dev/ttyUSB0` or `COM3`), the InfluxDB URL and organisation, and the project path in the scripts. The scripts still contain example paths such as `/path/to/001_automation_fisens_influxdb`.
+2. Set the InfluxDB token as an environment variable named `INFLUXDB_TOKEN` (or in a `.env` file, which git ignores). The org is `fisens` and the bucket is `sensors`.
+3. Change the default passwords in `docker-compose.yml` (`INFLUXDB_PASSWORD`, `GRAFANA_PASSWORD`) before running the stack.
 
 ## Notes
 
-- Never commit `apikey.env` or other tokens.
-- The LabVIEW code is on the `2026` branch; earlier scripts (test and system checks) are on the `2025` branch.
+- Never commit `.env`, `influx_api.txt`, or other tokens. They are listed in `.gitignore`.
+- Older 2025 scripts and the LabVIEW code are on the `2025` and `2026` branches.

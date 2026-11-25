@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBG Logger Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        header .logo {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 25px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 1em;
+            color: white;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.running {
+            background: #10b981;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .peaks-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .peaks-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .peaks-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .peak-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+        }
+
+        .peak-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .peak-card.peak-1 {
+            border-left-color: #f59e0b;
+        }
+
+        .peak-card.peak-2 {
+            border-left-color: #8b5cf6;
+        }
+
+        .peak-card.peak-3 {
+            border-left-color: #06b6d4;
+        }
+
+        .peak-number {
+            font-size: 0.85em;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .peak-label {
+            color: #666;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .peak-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .peak-value.wavelength {
+            color: #667eea;
+        }
+
+        .peak-value.amplitude {
+            color: #f59e0b;
+        }
+
+        .timestamp {
+            font-size: 0.8em;
+            color: #999;
+            padding-top: 15px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <div class="logo">🌊</div>
+                FBG Logger
+            </h1>
+            <p>Fiber Bragg Grating Sensor Monitoring</p>
+        </header>
+
+        <div class="status-badge">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Monitoring...</span>
+        </div>
+
+        <div class="peaks-grid" id="peaksContainer">
+            <div style="text-align: center; color: white; padding: 40px;">
+                <p>⏳ Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        const REFRESH_INTERVAL = 5000;
+
+        async function updateStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/status`);
+                const data = await response.json();
+
+                // Update status
+                const statusDot = document.getElementById('statusDot');
+                const statusText = document.getElementById('statusText');
+
+                if (data.logger_running) {
+                    statusDot.classList.add('running');
+                    statusText.textContent = 'Live Monitoring';
+                } else {
+                    statusDot.classList.remove('running');
+                    statusText.textContent = 'Offline';
+                }
+
+                // Always show 3 columns - fill with zeros if no data
+                const peaks = data.peaks || [];
+                const peaksArray = [1, 2, 3].map(num => {
+                    const peak = peaks.find(p => parseInt(p.peak_number) === num);
+                    return peak || {
+                        peak_number: num.toString(),
+                        wavelength_nm: 0,
+                        amplitude: 0,
+                        timestamp: new Date().toISOString()
+                    };
+                });
+
+                updatePeaks(peaksArray);
+            } catch (error) {
+                console.error('Error fetching status:', error);
+            }
+        }
+
+        function updatePeaks(peaksArray) {
+            const container = document.getElementById('peaksContainer');
+
+            container.innerHTML = peaksArray.map((peak) => `
+                <div class="peak-card peak-${peak.peak_number}">
+                    <div class="peak-number">Peak ${peak.peak_number}</div>
+
+                    <div class="peak-label">Wavelength</div>
+                    <div class="peak-value wavelength">
+                        ${parseFloat(peak.wavelength_nm).toFixed(2)}<span style="font-size: 0.6em; color: #666;"> nm</span>
+                    </div>
+
+                    <div class="peak-label">Amplitude</div>
+                    <div class="peak-value amplitude">
+                        ${parseFloat(peak.amplitude).toFixed(0)}
+                    </div>
+
+                    <div class="timestamp">
+                        Updated: ${new Date(peak.timestamp).toLocaleTimeString()}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initial load and auto-refresh
+        updateStatus();
+        setInterval(updateStatus, REFRESH_INTERVAL);
+    </script>
+</body>
+</html>
