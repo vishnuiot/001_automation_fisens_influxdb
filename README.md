@@ -14,6 +14,7 @@ Current Python scripts and Windows batch files for the FiSens fibre optic sensor
 | `start_dashboard.bat` | Start the dashboard on Windows |
 | `Dockerfile`, `docker-compose.yml` | Run the services in Docker |
 | `requirements.txt` | Python dependencies |
+| `grafana/Real_Time_Fiber_Optic_Sensing_System.json` | Grafana dashboard (import via Dashboards → New → Import; needs an InfluxDB data source with UID `dg1x9xhe8xg5cd`) |
 
 ## Setup
 

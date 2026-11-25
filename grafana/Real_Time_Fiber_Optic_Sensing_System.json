@@ -1,0 +1,353 @@
+{
+  "apiVersion": "dashboard.grafana.app/v2",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "adn5jgc",
+    "namespace": "default",
+    "uid": "e0f4a4a1-c8f4-426b-8d3c-9b6cdef1c74f",
+    "resourceVersion": "1795508083618998",
+    "generation": 26,
+    "creationTimestamp": "2026-10-22T20:37:08Z",
+    "labels": {
+      "grafana.app/deprecatedInternalID": "1180855910154240"
+    },
+    "annotations": {
+      "grafana.app/createdBy": "user:cg1x6wxtxiuiof",
+      "grafana.app/message": "test",
+      "grafana.app/saved-from-ui": "Grafana v13.2.4 (0e79aef9d9)",
+      "grafana.app/updatedBy": "user:cg1x6wxtxiuiof",
+      "grafana.app/updatedTimestamp": "2026-11-24T08:14:43Z"
+    }
+  },
+  "spec": {
+    "annotations": [
+      {
+        "kind": "AnnotationQuery",
+        "spec": {
+          "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
+            "datasource": {
+              "name": "-- Grafana --"
+            },
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true
+        }
+      }
+    ],
+    "cursorSync": "Off",
+    "description": "Real time monitoring of sensor data",
+    "editable": true,
+    "elements": {
+      "panel-1": {
+        "kind": "Panel",
+        "spec": {
+          "id": 1,
+          "title": "Wavelength_Tracking",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dg1x9xhe8xg5cd"
+                      },
+                      "spec": {
+                        "query": "from(bucket:\"sensors\")\r\n  |> range(start: -1h)\r\n  |> filter(fn: (r) => r._measurement == \"peak_spectrum\")\r\n  |> filter(fn: (r) => r._field == \"peak_wavelength_nm\")\r\n  |> filter(fn: (r) => r._value > 0 and r._value <= 830)\r\n  |> map(fn: (r) => ({r with _series:\r\n    if r.peak_number == \"1\" then \"P1 - Blue (806 nm)\"\r\n    else if r.peak_number == \"2\" then \"P2 - Green (813 nm)\"\r\n    else if r.peak_number == \"3\" then \"P3 - Red (816 nm)\"\r\n    else \"Unknown\"}))\r\n  |> sort(columns: [\"_time\"], desc: true)\r\n  "
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.2.4",
+            "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "Reference FiberOptic Grating",
+                  "unit": "nm",
+                  "decimals": 3,
+                  "min": 800,
+                  "max": 830,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic",
+                    "seriesBy": "last"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "axisSoftMin": 800,
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 27,
+                    "gradientMode": "opacity",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineStyle": {
+                      "fill": "solid"
+                    },
+                    "lineWidth": 3,
+                    "pointSize": 17,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-2": {
+        "kind": "Panel",
+        "spec": {
+          "id": 2,
+          "title": "Amplitude_Tracking",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "dg1x9xhe8xg5cd"
+                      },
+                      "spec": {
+                        "query": "from(bucket:\"sensors\")\r\n  |> range(start: -1h)\r\n  |> filter(fn: (r) => r._measurement == \"peak_spectrum\")\r\n  |> filter(fn: (r) => r._field == \"peak_amplitude\")\r\n  |> filter(fn: (r) => r._value > 3200 and r._value <= 4500)\r\n  |> map(fn: (r) => ({r with _series:\r\n    if r.peak_number == \"1\" then \"P1 - Blue (806 nm)\"\r\n    else if r.peak_number == \"2\" then \"P2 - Yellow (813 nm)\"\r\n    else if r.peak_number == \"3\" then \"P3 - Red (816 nm)\"\r\n    else \"Unknown\"}))\r\n  |> sort(columns: [\"_time\"], desc: true)"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.2.4",
+            "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic",
+                    "seriesBy": "last"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 27,
+                    "gradientMode": "opacity",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineStyle": {
+                      "fill": "solid"
+                    },
+                    "lineWidth": 4,
+                    "pointSize": 17,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      }
+    },
+    "layout": {
+      "kind": "GridLayout",
+      "spec": {
+        "items": [
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 23,
+              "height": 8,
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-1"
+              }
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "x": 0,
+              "y": 8,
+              "width": 23,
+              "height": 10,
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-2"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "links": [],
+    "liveNow": false,
+    "preload": false,
+    "tags": [],
+    "timeSettings": {
+      "timezone": "browser",
+      "from": "now-30m",
+      "to": "now",
+      "autoRefresh": "5s",
+      "autoRefreshIntervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "hideTimepicker": false,
+      "fiscalYearStartMonth": 0
+    },
+    "title": "Real_Time_Fiber_Optic_Sensing_System",
+    "variables": [],
+    "preferences": {
+      "layout": {
+        "kind": "GridLayout",
+        "spec": {
+          "items": []
+        }
+      }
+    }
+  }
+}
